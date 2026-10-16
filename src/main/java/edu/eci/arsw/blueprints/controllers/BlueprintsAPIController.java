@@ -25,7 +25,11 @@ public class BlueprintsAPIController {
     // GET /blueprints
     @GetMapping
     public ResponseEntity<Set<Blueprint>> getAll() {
-        return ResponseEntity.ok(services.getAllBlueprints());
+        try {
+            return ResponseEntity.ok(services.getAllBlueprints());
+        } catch (BlueprintNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("recurso inexistente", e.getMessage()));
+        }
     }
 
     // GET /blueprints/{author}
@@ -34,7 +38,7 @@ public class BlueprintsAPIController {
         try {
             return ResponseEntity.ok(services.getBlueprintsByAuthor(author));
         } catch (BlueprintNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("recurso inexistente", e.getMessage()));
         }
     }
 
@@ -44,7 +48,7 @@ public class BlueprintsAPIController {
         try {
             return ResponseEntity.ok(services.getBlueprint(author, bpname));
         } catch (BlueprintNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("recurso inexistente", e.getMessage()));
         }
     }
 
@@ -56,7 +60,7 @@ public class BlueprintsAPIController {
             services.addNewBlueprint(bp);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (BlueprintPersistenceException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("datos inválidos", e.getMessage()));
         }
     }
 
@@ -68,7 +72,7 @@ public class BlueprintsAPIController {
             services.addPoint(author, bpname, p.x(), p.y());
             return ResponseEntity.status(HttpStatus.ACCEPTED).build();
         } catch (BlueprintNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("datos inválidos", e.getMessage()));
         }
     }
 
