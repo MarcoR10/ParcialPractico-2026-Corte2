@@ -25,11 +25,7 @@ public class BlueprintsAPIController {
     // GET /blueprints
     @GetMapping
     public ResponseEntity<Set<Blueprint>> getAll() {
-        try {
-            return ResponseEntity.ok(services.getAllBlueprints());
-        } catch (BlueprintNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("recurso inexistente", e.getMessage()));
-        }
+        return ResponseEntity.ok(services.getAllBlueprints());
     }
 
     // GET /blueprints/{author}
